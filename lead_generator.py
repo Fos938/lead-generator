@@ -12,9 +12,10 @@ from datetime import datetime
 import streamlit as st
 import together
 import base64
+import re
 
 # API Configuration
-API_KEY = "92d982839350af340663ea7ad18ce538fb4a2ebfb8ab182e1be3a64a1bea6949"
+API_KEY = "tgp_v1_gzKwYqxWo648X5KF-gQR6rQC4KCm6HHqsQl-PEfrq9Y"
 together.api_key = API_KEY
 MODEL = "meta-llama/Llama-3.3-70B-Instruct-Turbo"
 
@@ -61,7 +62,6 @@ class LeadGenerator:
             content = response['output']['text']
             
             # Find JSON in the response (in case there's surrounding text)
-            import re
             json_match = re.search(r'\[.*\]', content, re.DOTALL)
             if json_match:
                 content = json_match.group(0)
@@ -156,7 +156,6 @@ class LeadGenerator:
             content = response['output']['text']
             
             # Find JSON in the response (in case there's surrounding text)
-            import re
             json_match = re.search(r'\[.*\]', content, re.DOTALL)
             if json_match:
                 content = json_match.group(0)
