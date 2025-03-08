@@ -10,12 +10,12 @@ import time
 import pandas as pd
 from datetime import datetime
 import streamlit as st
-from together import Together
+import together
 import base64
 
 # API Configuration
 API_KEY = "92d982839350af340663ea7ad18ce538fb4a2ebfb8ab182e1be3a64a1bea6949"
-client = Together(api_key=API_KEY)
+together.api_key = API_KEY
 MODEL = "meta-llama/Llama-3.3-70B-Instruct-Turbo"
 
 class LeadGenerator:
@@ -51,17 +51,14 @@ class LeadGenerator:
         """
         
         try:
-            response = client.chat.completions.create(
+            response = together.Complete.create(
+                prompt=f"<s>[INST] {research_prompt} [/INST]",
                 model=MODEL,
-                messages=[
-                    {"role": "system", "content": "You are a lead generation assistant that provides accurate, well-researched business information in JSON format."},
-                    {"role": "user", "content": research_prompt}
-                ],
                 temperature=0.2,
                 max_tokens=2000
             )
             
-            content = response.choices[0].message.content
+            content = response['output']['text']
             
             # Find JSON in the response (in case there's surrounding text)
             import re
@@ -149,17 +146,14 @@ class LeadGenerator:
         """
         
         try:
-            response = client.chat.completions.create(
+            response = together.Complete.create(
+                prompt=f"<s>[INST] {analysis_prompt} [/INST]",
                 model=MODEL,
-                messages=[
-                    {"role": "system", "content": "You are a lead qualification assistant that analyzes business data and provides scoring in perfect JSON format with no additional text."},
-                    {"role": "user", "content": analysis_prompt}
-                ],
                 temperature=0.2,
                 max_tokens=2000
             )
             
-            content = response.choices[0].message.content
+            content = response['output']['text']
             
             # Find JSON in the response (in case there's surrounding text)
             import re
@@ -203,17 +197,14 @@ class LeadGenerator:
         """
         
         try:
-            response = client.chat.completions.create(
+            response = together.Complete.create(
+                prompt=f"<s>[INST] {prompt} [/INST]",
                 model=MODEL,
-                messages=[
-                    {"role": "system", "content": "You are a sales outreach specialist who writes highly effective, personalized business emails."},
-                    {"role": "user", "content": prompt}
-                ],
                 temperature=0.7,
                 max_tokens=500
             )
             
-            return response.choices[0].message.content
+            return response['output']['text']
             
         except Exception as e:
             st.error(f"Error generating email: {str(e)}")
